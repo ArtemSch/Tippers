@@ -7,8 +7,8 @@
 
 <form method="GET">
     <select class="filter" name="filter">
-        {% for model in Models %}
-            <option value="{{ model }}">{{ model }}</option>
+        {% for select in Selects %}
+            <option value="{{ select }}">{{ select }}</option>
         {% endfor %}
     </select>
 

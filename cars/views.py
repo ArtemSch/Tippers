@@ -1,20 +1,21 @@
 from django.shortcuts import render
+from django.views import View
 
 from .models import Tipper
 
 
-def index(request):
-    if request.GET:
-        tippers = Tipper.objects.filter(model__iexact=request.GET.get('filter'))
-    else:
-        tippers = Tipper.objects.all()
-    tipper_models = Tipper.Model.labels
+class TippersListAPIView(View):
+    def get_queryset(self):
+        return Tipper.objects.all()
 
-    context = {
-        'Tippers': tippers,
-        'Models': tipper_models,
+    def get(self, request, *args, **kwargs):
+        if request.GET:
+            tippers = Tipper.objects.filter(model__iexact=request.GET.get('filter'))
+        else:
+            tippers = self.get_queryset()
 
-    }
-    return render(request, 'home.html', context)
-
-
+        selects = Tipper.objects.values_list('model', flat=True).distinct()
+        context = {'Tippers': tippers,
+                   'Selects': selects
+                   }
+        return render(request, 'home.html', context)
